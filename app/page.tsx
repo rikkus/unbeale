@@ -9,7 +9,10 @@ import {
 import { Separator } from "@/components/ui/separator";
 import { Workbench } from "@/components/Workbench";
 import {
+  applyHomophones,
+  buildKey,
   decode,
+  homophoneTable,
   pamphletInitials,
 } from "@/lib/bookCipher";
 import {
@@ -41,6 +44,26 @@ export default function Home() {
   ].map((row) => ({ ...row, stats: cipherStats(row.nums) }));
   const gillogly = paper1Score.longestMonoRun;
   const keys = loadPresetKeys();
+  const paper2AsBook = decode(
+    CIPHER_1,
+    buildKey(PAPER_2_PLAINTEXT, "word-initial"),
+  );
+  const paper2AsBookScore = scorePlaintext(
+    paper2AsBook.text,
+    1 - paper2AsBook.coverage,
+  );
+  const paper2AsLetters = decode(
+    CIPHER_1,
+    buildKey(PAPER_2_PLAINTEXT, "letters"),
+  );
+  const paper2AsLettersScore = scorePlaintext(
+    paper2AsLetters.text,
+    1 - paper2AsLetters.coverage,
+  );
+  const cribTable = homophoneTable(CIPHER_2, paper2.text);
+  const crib = applyHomophones(CIPHER_1, cribTable.table);
+  const cribScore = scorePlaintext(crib.text, 1 - crib.coverage);
+  const cribRun = cribScore.longestMonoRun;
 
   return (
     <div className="flex flex-1 flex-col">
@@ -68,8 +91,8 @@ export default function Home() {
             <a className="underline-offset-4 hover:underline" href="#gillogly">
               Alphabet run
             </a>
-            <a className="underline-offset-4 hover:underline" href="#plan">
-              Attack plan
+            <a className="underline-offset-4 hover:underline" href="#paper2-crib">
+              Paper 2 crib
             </a>
             <a className="underline-offset-4 hover:underline" href="#workbench">
               Try a key
@@ -285,6 +308,97 @@ export default function Home() {
           </Card>
         </section>
 
+        <section id="paper2-crib" className="scroll-mt-8 space-y-4">
+          <div>
+            <p className="text-xs tracking-[0.22em] text-[var(--seal)] uppercase">
+              Test · Paper 2 as a crib
+            </p>
+            <h2 className="font-heading text-3xl">
+              The decoded inventory does not unlock Paper 1
+            </h2>
+            <p className="mt-3 max-w-3xl leading-7 text-muted-foreground">
+              Two different uses of the solved paper. Numbering its 160 words
+              as if it were the missing book is the naive test. Reusing the
+              number-to-letter table recovered from that break is the
+              cryptanalyst’s test: if both papers used the same numbered
+              document, every shared number must mean the same letter.
+            </p>
+          </div>
+          <div className="grid gap-4 lg:grid-cols-2">
+            <Card>
+              <CardHeader>
+                <Badge variant="outline">As a book</Badge>
+                <CardTitle className="mt-2">
+                  Inventory text as the key
+                </CardTitle>
+                <CardDescription>
+                  160 words, 763 letters. Paper 1’s largest number is 2,906, so
+                  most of the stream falls off the end.
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-3 text-sm leading-6">
+                <p>
+                  Word initials cover {Math.round(paper2AsBook.coverage * 100)}%
+                  of Paper 1 (English score{" "}
+                  {paper2AsBookScore.englishScore.toFixed(1)}). Every-letter
+                  numbering covers{" "}
+                  {Math.round(paper2AsLetters.coverage * 100)}% (score{" "}
+                  {paper2AsLettersScore.englishScore.toFixed(1)}). Paper 2
+                  itself scored {paper2Score.englishScore.toFixed(1)} against
+                  the Declaration.
+                </p>
+                <p className="font-mono text-[13px] leading-6 break-all text-muted-foreground">
+                  {formatDecode(paper2AsBook.text)}
+                </p>
+                <p className="text-muted-foreground">
+                  Choose “Paper 2 inventory (decoded)” in the workbench to try
+                  wrap, finals, and the other numbering rules. None of them
+                  produce a location.
+                </p>
+              </CardContent>
+            </Card>
+            <Card>
+              <CardHeader>
+                <Badge variant="outline">As a homophone table</Badge>
+                <CardTitle className="mt-2">
+                  Shared numbers keep the alphabet run
+                </CardTitle>
+                <CardDescription>
+                  {cribTable.size} numbers from Paper 2 each map to one letter,
+                  with {cribTable.conflicts} conflicts. {crib.missing} of Paper
+                  1’s numbers never appear in Paper 2.
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-3 text-sm leading-6">
+                <p>
+                  Coverage {Math.round(crib.coverage * 100)}%. English score{" "}
+                  {cribScore.englishScore.toFixed(1)}. The longest alphabet-like
+                  run that still sits on numbers Paper 2 actually used is{" "}
+                  <span className="font-mono">
+                    {cribRun.text.toUpperCase()}
+                  </span>
+                  . That is Gillogly’s string with the unshared numbers left
+                  blank. Paper 1 is touching the Declaration, not the inventory
+                  prose.
+                </p>
+                <div className="rounded-xl bg-[var(--stream)] p-4 font-mono text-[13px] leading-6 break-all">
+                  {formatDecode(crib.text.slice(0, Math.max(0, cribRun.start)))}
+                  {cribRun.length ? " " : ""}
+                  {cribRun.length >= 8 ? (
+                    <mark className="rounded-sm bg-[var(--highlight)] px-0.5 text-foreground">
+                      {formatDecode(cribRun.text)}
+                    </mark>
+                  ) : null}
+                  {cribRun.length ? " " : ""}
+                  {formatDecode(
+                    crib.text.slice(cribRun.start + cribRun.length),
+                  )}
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        </section>
+
         <section id="plan" className="scroll-mt-8 space-y-6">
           <div className="max-w-3xl">
             <p className="text-xs tracking-[0.22em] text-[var(--seal)] uppercase">
@@ -368,10 +482,11 @@ export default function Home() {
               Run Paper 1 against a key
             </h2>
             <p className="mt-3 leading-7 text-muted-foreground">
-              Preset documents are public-domain texts someone in 1822 or 1885
-              could have numbered. Paste anything else you want to test. The
-              scorer is calibrated on Paper 2; if a result is not at least that
-              readable, it is not a decipherment.
+              Preset documents include the decoded Paper 2 inventory, so you
+              can test that crib in one click, plus public-domain texts someone
+              in 1822 or 1885 could have numbered. Paste anything else you
+              want to try. The scorer is calibrated on Paper 2; if a result is
+              not at least that readable, it is not a decipherment.
             </p>
           </div>
           <Card>

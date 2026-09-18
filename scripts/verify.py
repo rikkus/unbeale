@@ -55,6 +55,14 @@ def main() -> None:
     assert "abfdefghiijklmmnohpp" in paper1, paper1[180:210]
     assert "defghiijklmmno" in paper1
 
+    table = {}
+    for n, ch in zip(c2, paper2):
+        if ch != "?":
+            table[n] = ch
+    crib = "".join(table.get(n, "?") for n in c1)
+    assert "defghiijklm" in crib
+    assert crib.count("?") == 242
+
     print("ok")
     print("  paper1", len(c1), "max", max(c1), "blanks", paper1.count("?"))
     print("  paper2 sample", paper2[:80])

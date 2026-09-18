@@ -125,3 +125,43 @@ export function pamphletInitials(
   }
   return key;
 }
+
+export function homophoneTable(
+  cipher: number[],
+  plaintext: string,
+): { table: Record<number, string>; conflicts: number; size: number } {
+  const letters = plaintext.toLowerCase().replace(/[^a-z?]/g, "");
+  const table: Record<number, string> = {};
+  let conflicts = 0;
+  const limit = Math.min(cipher.length, letters.length);
+  for (let i = 0; i < limit; i += 1) {
+    const n = cipher[i];
+    const letter = letters[i];
+    if (letter === "?") continue;
+    if (table[n] && table[n] !== letter) conflicts += 1;
+    table[n] = letter;
+  }
+  return { table, conflicts, size: Object.keys(table).length };
+}
+
+export function applyHomophones(
+  cipher: number[],
+  table: Record<number, string>,
+): DecodeResult {
+  const chars: string[] = [];
+  let missing = 0;
+  for (const n of cipher) {
+    const letter = table[n];
+    if (letter) chars.push(letter);
+    else {
+      chars.push("?");
+      missing += 1;
+    }
+  }
+  return {
+    text: chars.join(""),
+    missing,
+    coverage: cipher.length === 0 ? 0 : 1 - missing / cipher.length,
+    keyLength: Object.keys(table).length,
+  };
+}

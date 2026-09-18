@@ -20,6 +20,12 @@ export const PRESET_KEYS = [
     why: "The only key that has ever produced a readable Beale paper.",
   },
   {
+    id: "paper2_plaintext.txt",
+    label: "Paper 2 inventory (decoded)",
+    year: "decoded from the Declaration",
+    why: "The solved inventory itself, tested as if it were the book for Paper 1. It is far too short unless you wrap.",
+  },
+  {
     id: "us_constitution.txt",
     label: "U.S. Constitution",
     year: "1787",
