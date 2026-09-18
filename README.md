@@ -18,6 +18,22 @@ Then open [http://127.0.0.1:4721](http://127.0.0.1:4721).
 
 `npm test` checks that the pamphlet numbers are intact: Paper 2 still contains `gold`, and Paper 1 under the Declaration still contains Gillogly’s `ABFDEFGHIIJKLMMNOHPP`.
 
+## GitHub Pages
+
+The app is a static export (`output: "export"`). On GitHub, the workflow in `.github/workflows/pages.yml` builds `out/` and deploys it.
+
+After the repository is on GitHub as a **public** repo:
+
+1. Settings → Pages → Build and deployment → Source: **GitHub Actions**
+2. Push to `main` (or run the **Deploy GitHub Pages** workflow)
+3. Browse to `https://<user>.github.io/<repo>/`
+
+Local static preview after `npm run build`:
+
+```bash
+npx --yes serve out -p 4721
+```
+
 ## What the plan is
 
 1. **Calibrate** on Paper 2 so the scorer would have caught the real break.
