@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Textarea } from "@/components/ui/textarea";
@@ -127,43 +127,17 @@ function HighlightedStream({
 
 export function Workbench({
   paper2Score,
+  keys,
 }: {
   paper2Score: number;
+  keys: Record<string, string>;
 }) {
   const [preset, setPreset] = useState<string>(PRESET_KEYS[0].id);
   const [scheme, setScheme] = useState<SchemeId>("word-initial");
   const [wrap, setWrap] = useState(false);
   const [custom, setCustom] = useState("");
-  const [source, setSource] = useState("");
-  const [status, setStatus] = useState<"idle" | "loading" | "error">("loading");
-  const [error, setError] = useState("");
 
-  useEffect(() => {
-    let cancelled = false;
-    setStatus("loading");
-    setError("");
-    fetch(`/keys/${preset}`)
-      .then((response) => {
-        if (!response.ok) throw new Error(`Could not load ${preset}`);
-        return response.text();
-      })
-      .then((text) => {
-        if (!cancelled) {
-          setSource(text);
-          setStatus("idle");
-        }
-      })
-      .catch((err: unknown) => {
-        if (!cancelled) {
-          setStatus("error");
-          setError(err instanceof Error ? err.message : "Load failed");
-        }
-      });
-    return () => {
-      cancelled = true;
-    };
-  }, [preset]);
-
+  const source = keys[preset] ?? "";
   const keyText = custom.trim() ? custom : source;
 
   const view: DecodeView | null = useMemo(() => {
@@ -252,11 +226,10 @@ export function Workbench({
         />
       </label>
 
-      {status === "loading" && !custom ? (
-        <p className="text-sm text-muted-foreground">Loading key document…</p>
-      ) : null}
-      {status === "error" && !custom ? (
-        <p className="text-sm text-destructive">{error}</p>
+      {!keyText.trim() ? (
+        <p className="text-sm text-destructive">
+          That key document is missing. Paste a text or pick another preset.
+        </p>
       ) : null}
 
       {view ? (

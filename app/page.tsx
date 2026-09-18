@@ -19,6 +19,7 @@ import {
   DOI_PAMPHLET,
   PAPER_2_PLAINTEXT,
 } from "@/lib/ciphers";
+import { loadPresetKeys } from "@/lib/loadKeys";
 import { HYPOTHESES, PHASES, SUCCESS_TEST } from "@/lib/plan";
 import { groupForDisplay, scorePlaintext } from "@/lib/scoring";
 import { chiSquaredUniform, cipherStats } from "@/lib/stats";
@@ -39,6 +40,7 @@ export default function Home() {
     { name: "Paper 3 · names", nums: CIPHER_3, status: "Unsolved" },
   ].map((row) => ({ ...row, stats: cipherStats(row.nums) }));
   const gillogly = paper1Score.longestMonoRun;
+  const keys = loadPresetKeys();
 
   return (
     <div className="flex flex-1 flex-col">
@@ -374,7 +376,10 @@ export default function Home() {
           </div>
           <Card>
             <CardContent className="pt-6">
-              <Workbench paper2Score={paper2Score.englishScore} />
+              <Workbench
+                paper2Score={paper2Score.englishScore}
+                keys={keys}
+              />
             </CardContent>
           </Card>
         </section>

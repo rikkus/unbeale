@@ -46,7 +46,7 @@ export type DecodeResult = {
 };
 
 export function tokenize(text: string): string[] {
-  return text.match(/[A-Za-z]+(?:'[A-Za-z]+)?/g) ?? [];
+  return text.match(/[A-Za-z]+(?:['’`][A-Za-z]+)?/g) ?? [];
 }
 
 export function firstLetter(word: string): string {
