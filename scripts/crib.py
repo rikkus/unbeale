@@ -1047,6 +1047,8 @@ def run_search(
             on_checkpoint(hits, stats_now())
             last_report = now
 
+    maybe_checkpoint(force=True)
+
     def run_batch(n_workers: int, rounds: int, stop_at: float, pool) -> None:
         nonlocal seed, greedy_kept
         payloads = []
@@ -1214,8 +1216,6 @@ def main() -> None:
         }
         args.output.write_text(json.dumps(payload, indent=2))
         print(f"checkpoint {args.output} at {payload['seconds']}s", flush=True)
-
-    write()
 
     def note_free(current: list[Hit], stats: dict) -> None:
         nonlocal hits_free, stats_free
