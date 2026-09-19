@@ -1,6 +1,8 @@
 import { AboutBeale } from "@/components/AboutBeale";
+import { CribPanel } from "@/components/CribPanel";
 import { ManualEntry } from "@/components/ManualEntry";
 import { TextsTable } from "@/components/TextsTable";
+import cribResults from "@/data/crib_results.json";
 import {
   Tabs,
   TabsContent,
@@ -25,6 +27,7 @@ import { loadPresetKeys } from "@/lib/loadKeys";
 import { scorePlaintext } from "@/lib/scoring";
 import { chiSquaredUniform, cipherStats } from "@/lib/stats";
 import { trialsForPresets } from "@/lib/trial";
+import type { CribResults } from "@/lib/cribResults";
 
 export default function Home() {
   const doiKey = pamphletInitials(DOI_PAMPHLET);
@@ -83,12 +86,15 @@ export default function Home() {
 
       <main className="mx-auto flex w-full max-w-6xl flex-1 flex-col px-4 py-8 sm:px-6 lg:px-8">
         <Tabs defaultValue="texts" className="gap-6">
-          <TabsList className="flex h-11 w-full p-1">
+          <TabsList className="flex h-auto min-h-11 w-full flex-wrap p-1">
             <TabsTrigger value="texts" className="px-3 py-2">
               Texts
             </TabsTrigger>
             <TabsTrigger value="manual" className="px-3 py-2">
               Manual Entry
+            </TabsTrigger>
+            <TabsTrigger value="cribs" className="px-3 py-2">
+              Cribs
             </TabsTrigger>
             <TabsTrigger value="about" className="px-3 py-2">
               About
@@ -99,6 +105,9 @@ export default function Home() {
           </TabsContent>
           <TabsContent value="manual" className="pt-2" keepMounted>
             <ManualEntry />
+          </TabsContent>
+          <TabsContent value="cribs" className="pt-2">
+            <CribPanel results={cribResults as CribResults} />
           </TabsContent>
           <TabsContent value="about" className="pt-2">
             <AboutBeale

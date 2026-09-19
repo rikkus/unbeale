@@ -7,7 +7,8 @@
     "build": "next build",
     "start": "next start -p 4721 -H 0.0.0.0",
     "lint": "eslint",
-    "test": "python3 scripts/verify.py"
+    "test": "python3 scripts/verify.py",
+    "crib": "python3 scripts/crib.py --seconds 3600"
   },
   "dependencies": {
     "@base-ui/react": "^1.8.0",
