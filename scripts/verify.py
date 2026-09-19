@@ -64,6 +64,25 @@ def main() -> None:
     assert "defghiijklm" in crib
     assert crib.count("?") == 242
 
+    import importlib.util
+    import sys
+
+    spec = importlib.util.spec_from_file_location("beale_crib", ROOT / "scripts" / "crib.py")
+    crib_mod = importlib.util.module_from_spec(spec)
+    assert spec.loader is not None
+    sys.modules["beale_crib"] = crib_mod
+    spec.loader.exec_module(crib_mod)
+    dictionary = crib_mod.build_dictionary()
+    location = set(crib_mod.LOCATION)
+    cal = crib_mod.calibrate(c2, paper2, dictionary, location)
+    assert cal["ok"], cal
+    assert cal["extra"] >= 100, cal
+    cribs = crib_mod.generate_cribs(paper2)
+    assert len(cribs) >= 20000, len(cribs)
+    engine = crib_mod.CribEngine(c2, dictionary, location)
+    true_crib = re.sub(r"[^a-z]", "", paper2)[:32]
+    assert engine.try_place(0, true_crib) is not None
+
     extra = {
         "star_spangled_banner.txt": 50,
         "yankee_doodle.txt": 100,

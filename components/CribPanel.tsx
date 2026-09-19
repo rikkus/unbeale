@@ -76,7 +76,14 @@ function HitTable({
 export function CribPanel({ results }: { results: CribResults }) {
   const freeBest = results.bestFreeScore ?? 0;
   const shuffledBest = results.bestShuffledScore ?? 0;
-  const noSignal = shuffledBest >= freeBest - 5;
+  const freeExtra =
+    results.bestFreeSingleExtra ?? results.stats.free?.bestSingleExtra ?? 0;
+  const shuffledExtra =
+    results.bestShuffledSingleExtra ??
+    results.stats.shuffled?.bestSingleExtra ??
+    0;
+  const noSignal =
+    shuffledBest >= freeBest - 5 && shuffledExtra >= freeExtra - 2;
   return (
     <div className="space-y-6">
       <div className="max-w-3xl space-y-3 text-sm leading-6 text-muted-foreground">
@@ -88,8 +95,10 @@ export function CribPanel({ results }: { results: CribResults }) {
           any location words that appear <em>outside</em> the crib itself.
         </p>
         <p>
-          The engine tries single phrases, then pairs, then a time-bounded beam
-          that adds more cribs and dictionary words. A second pass locks the{" "}
+          The engine enumerates every homophone-consistent placement of a large
+          phrase list (in parallel), then spends the rest of the budget pairing
+          them, packing random compatible subsets, and running a beam over the
+          stored placements. A second pass locks the{" "}
           {results.calibration.ok ? "122" : ""} numbers Paper 1 shares with
           Paper 2 to the Declaration letters from the known break. A shuffled
           Paper 1 is the noise floor: if it scores as well as the real list,
@@ -97,12 +106,24 @@ export function CribPanel({ results }: { results: CribResults }) {
         </p>
         <p>
           Last run: {results.seconds.toFixed(0)}s, {results.cribCount} cribs,{" "}
-          {results.dictionarySize} scoring words. Re-run locally with{" "}
+          {results.dictionarySize} scoring words
+          {results.workers ? `, ${results.workers} workers` : ""}
+          {results.stats.free?.placementsKept
+            ? `, ${results.stats.free.placementsKept} free placements kept`
+            : ""}
+          {results.stats.free?.greedyKept
+            ? `, ${results.stats.free.greedyKept} greedy packs`
+            : ""}
+          . Re-run locally with{" "}
           <code className="font-mono text-xs">npm run crib</code> (default one
-          hour).
+          hour;{" "}
+          <code className="font-mono text-xs">
+            python3 scripts/crib.py --seconds 7200
+          </code>{" "}
+          if you want a longer pass).
         </p>
       </div>
-      <div className="grid gap-3 sm:grid-cols-3">
+      <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
         <div className="rounded-lg bg-muted/60 px-3 py-2">
           <p className="text-[11px] tracking-wide text-muted-foreground uppercase">
             Paper 2 control extra letters
@@ -122,6 +143,14 @@ export function CribPanel({ results }: { results: CribResults }) {
             Shuffled control
           </p>
           <p className="font-heading text-2xl">{shuffledBest.toFixed(1)}</p>
+        </div>
+        <div className="rounded-lg bg-muted/60 px-3 py-2">
+          <p className="text-[11px] tracking-wide text-muted-foreground uppercase">
+            Best single extra (real / shuffle)
+          </p>
+          <p className="font-heading text-2xl">
+            {freeExtra} / {shuffledExtra}
+          </p>
         </div>
       </div>
       {noSignal ? (

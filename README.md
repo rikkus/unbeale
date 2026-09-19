@@ -18,7 +18,7 @@ Then open [http://127.0.0.1:4721](http://127.0.0.1:4721). Use the Texts, Manual 
 
 `npm test` checks that the pamphlet numbers are intact: Paper 2 still contains `gold`, and Paper 1 under the Declaration still contains Gillogly’s `ABFDEFGHIIJKLMMNOHPP`.
 
-`npm run crib` slides location phrases through Paper 1 for up to an hour (override with `python3 scripts/crib.py --seconds 7200`). Results are written to `data/crib_results.json` and shown on the Cribs tab.
+`npm run crib` slides a large list of location phrases through Paper 1, keeps every homophone-consistent placement, then spends up to an hour combining them (pairs, random greedy packs, and a beam). Override with `python3 scripts/crib.py --seconds 7200`. Results are written to `data/crib_results.json` and shown on the Cribs tab. A shuffled copy of Paper 1 is searched the same way; if it matches the real list, the “hits” are reuse artifacts.
 
 ## GitHub Pages
 

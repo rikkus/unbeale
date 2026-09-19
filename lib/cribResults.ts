@@ -29,10 +29,28 @@ export type CribResults = {
     outsideHits?: string[];
     reason?: string;
   };
-  stats: Record<string, { singlesTried?: number; validSingles?: number; beamDepth?: number }>;
+  stats: Record<
+    string,
+    {
+      singlesTried?: number;
+      validSingles?: number;
+      placementsKept?: number;
+      pairsTried?: number;
+      triplesTried?: number;
+      greedyKept?: number;
+      beamDepth?: number;
+      bestSingleExtra?: number;
+      bestSingleScore?: number;
+      workers?: number;
+    }
+  >;
+  workers?: number;
+  maxDepth?: number;
   paper1Free: CribHitJson[];
   paper1Paper2Prior: CribHitJson[];
   shuffledControl: CribHitJson[];
   bestFreeScore: number | null;
   bestShuffledScore: number | null;
+  bestFreeSingleExtra?: number | null;
+  bestShuffledSingleExtra?: number | null;
 };
