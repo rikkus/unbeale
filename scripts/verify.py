@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import json
+import re
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -62,6 +63,25 @@ def main() -> None:
     crib = "".join(table.get(n, "?") for n in c1)
     assert "defghiijklm" in crib
     assert crib.count("?") == 242
+
+    extra = {
+        "star_spangled_banner.txt": 50,
+        "yankee_doodle.txt": 100,
+        "america_the_beautiful.txt": 50,
+        "robinson_crusoe.txt": 2906,
+        "the_shipwreck.txt": 2906,
+    }
+    word_re = re.compile(r"[A-Za-z]+(?:['’`][A-Za-z]+)?")
+    for name, minimum in extra.items():
+        text = (DATA / "keys" / name).read_text()
+        public = (ROOT / "public" / "keys" / name).read_text()
+        assert text == public, name
+        count = len(word_re.findall(text))
+        assert count >= minimum, (name, count)
+    crusoe = (DATA / "keys" / "robinson_crusoe.txt").read_text()
+    assert "I was born in the year 1632" in crusoe
+    shipwreck = (DATA / "keys" / "the_shipwreck.txt").read_text()
+    assert "Lady Earlingford" in shipwreck
 
     print("ok")
     print("  paper1", len(c1), "max", max(c1), "blanks", paper1.count("?"))

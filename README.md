@@ -49,6 +49,8 @@ A candidate counts as a break only if the whole 520-letter stream is grammatical
 
 Numbers follow the Cipher Foundation transcription of the 1885 pamphlet (520 values in Paper 1). Gillogly’s table has 495; a real break should survive both. The Declaration word list is the pamphlet’s own numbered text.
 
+Preset keys live in `data/keys/` (copied to `public/keys/`). Besides founding documents, the workbench includes The Star-Spangled Banner, Yankee Doodle, America the Beautiful, the opening of *Robinson Crusoe*, and S. H. Burney’s *The Shipwreck*.
+
 ## Stack
 
 Next.js, TypeScript, Tailwind CSS, and shadcn/ui. Analysis lives in `lib/`. Preset keys are public-domain texts in `public/keys/`.

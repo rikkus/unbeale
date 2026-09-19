@@ -73,4 +73,34 @@ export const PRESET_KEYS = [
     year: "1885",
     why: "If the pamphlet is a hoax, its own prose is the document the fabricator had in front of him.",
   },
+  {
+    id: "star_spangled_banner.txt",
+    label: "The Star-Spangled Banner",
+    year: "1814",
+    why: "Francis Scott Key’s Defence of Fort McHenry. Far too short for word numbering; try every letter.",
+  },
+  {
+    id: "yankee_doodle.txt",
+    label: "Yankee Doodle",
+    year: "c. 1775",
+    why: "The Revolutionary camp ballad, including the macaroni verse. Short; useful as a letter-stream.",
+  },
+  {
+    id: "america_the_beautiful.txt",
+    label: "America the Beautiful",
+    year: "1911 (Bates)",
+    why: "Later than the pamphlet story; included because it is a frequently tried patriotic key. Short.",
+  },
+  {
+    id: "robinson_crusoe.txt",
+    label: "Robinson Crusoe (beginning)",
+    year: "1719",
+    why: "Defoe, chapters I–III: start in life through the wreck. Long enough to number past 2,906 without wrapping.",
+  },
+  {
+    id: "the_shipwreck.txt",
+    label: "The Shipwreck (S. H. Burney)",
+    year: "1816",
+    why: "Sarah Harriet Burney’s Tales of Fancy, vol. I. A desert-island novel in print before 1822. OCR of the 1816 Colburn edition.",
+  },
 ] as const;
