@@ -105,14 +105,14 @@ export function CribPanel({ results }: { results: CribResults }) {
           the “hits” are reuse artifacts, not a message.
         </p>
         <p>
-          Last run: {results.seconds.toFixed(0)}s, {results.cribCount} cribs,{" "}
-          {results.dictionarySize} scoring words
+          Last run: {results.seconds.toFixed(0)}s, {results.cribCount.toLocaleString()}{" "}
+          cribs, {results.dictionarySize} scoring words
           {results.workers ? `, ${results.workers} workers` : ""}
           {results.stats.free?.placementsKept
-            ? `, ${results.stats.free.placementsKept} free placements kept`
+            ? `, ${results.stats.free.placementsKept.toLocaleString()} free placements kept`
             : ""}
           {results.stats.free?.greedyKept
-            ? `, ${results.stats.free.greedyKept} greedy packs`
+            ? `, ${results.stats.free.greedyKept.toLocaleString()} greedy packs`
             : ""}
           . Re-run locally with{" "}
           <code className="font-mono text-xs">npm run crib</code> (default one
