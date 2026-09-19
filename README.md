@@ -1,8 +1,8 @@
 # Paper Number One
 
-A working plan — and a small workbench — for Beale cipher 1, the unsolved “location” paper from the 1885 *Beale Papers*.
+A working plan — and a scoring workbench — for Beale cipher 1, the unsolved “location” paper from the 1885 *Beale Papers*.
 
-Paper 2 (the inventory) can be read with a numbered Declaration of Independence. Paper 1 cannot. This repository reproduces that known break, shows James Gillogly’s 1980 alphabet run, and lets you test other book-cipher keys against Paper 1 with an English scorer calibrated on Paper 2.
+Paper 2 (the inventory) can be read with a numbered Declaration of Independence. Paper 1 cannot. This repository reproduces that known break, shows James Gillogly’s 1980 alphabet run, and scores stored and pasted book-cipher keys against Paper 1. The app has three tabs: **Texts** (every stored key × every numbering rule), **Manual Entry** (paste your own), and **About** (the attack plan).
 
 This is cryptanalysis of a published puzzle. It is not a map you should follow with a shovel. The ground around the old Buford’s tavern site is private property.
 
@@ -14,7 +14,7 @@ npm test
 npm run dev
 ```
 
-Then open [http://127.0.0.1:4721](http://127.0.0.1:4721).
+Then open [http://127.0.0.1:4721](http://127.0.0.1:4721). Use the Texts, Manual Entry, and About tabs.
 
 `npm test` checks that the pamphlet numbers are intact: Paper 2 still contains `gold`, and Paper 1 under the Declaration still contains Gillogly’s `ABFDEFGHIIJKLMMNOHPP`.
 
